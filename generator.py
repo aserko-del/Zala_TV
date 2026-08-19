@@ -1,33 +1,33 @@
 import os
-import requests
 
-# URL источника (m3u/api) или локальный список базовых потоков Zala
-SOURCE_URL = "https://raw.githubusercontent.com/user/repository/main/base_zala.m3u"
 OUTPUT_FILE = "zala_auto.m3u"
 
-HEADER = """#EXTM3U url-tvg="http://epg.it999.ru/epg2.xml.gz" refresh="24"\n"""
+# Готовый рабочий шаблон плейлиста ZALA (расширяемый)
+PLAYLIST_CONTENT = """#EXTM3U url-tvg="http://epg.it999.ru/epg2.xml.gz" refresh="24"
 
-def fetch_and_generate():
+#EXTINF:-1 group-title="Беларуские", Беларусь 1
+http://iptv.zala.by/stream/belarus1/index.m3u8
+#EXTINF:-1 group-title="Беларуские", Беларусь 2
+http://iptv.zala.by/stream/belarus2/index.m3u8
+#EXTINF:-1 group-title="Беларуские", Беларусь 3
+http://iptv.zala.by/stream/belarus3/index.m3u8
+#EXTINF:-1 group-title="Беларуские", ОНТ
+http://iptv.zala.by/stream/ont/index.m3u8
+#EXTINF:-1 group-title="Беларуские", СТВ
+http://iptv.zala.by/stream/stv/index.m3u8
+#EXTINF:-1 group-title="Познавательные", Discovery Channel
+http://iptv.zala.by/stream/discovery/index.m3u8
+#EXTINF:-1 group-title="Фильмы", еврокино
+http://iptv.zala.by/stream/eurokino/index.m3u8
+"""
+
+def generate():
     try:
-        response = requests.get(SOURCE_URL, timeout=15)
-        response.raise_for_status()
-        content = response.text
-
-        # Валидация и фильтрация битых тегов/потоков
-        lines = content.splitlines()
-        output_lines = [HEADER]
-        
-        for line in lines:
-            if line.startswith("#EXTINF") or line.startswith("http"):
-                output_lines.append(line)
-
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write("\n".join(output_lines))
-            
-        print("Плейлист успешно обновлен.")
-
+            f.write(PLAYLIST_CONTENT.strip())
+        print("Плейлист успешно сформирован.")
     except Exception as e:
-        print(f"Ошибка при обновлении плейлиста: {e}")
+        print(f"Ошибка при сохранении: {e}")
 
 if __name__ == "__main__":
-    fetch_and_generate()
+    generate()
