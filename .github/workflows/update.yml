@@ -2,26 +2,29 @@ name: Auto-Update Zala Playlist
 
 on:
   schedule:
+    # Автоматический запуск каждые 12 часов (в 00:00 и 12:00 UTC)
     - cron: '0 0,12 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Кнопка для ручного запуска
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
+      contents: write # Разрешение на запись файлов в репозиторий
 
-      - name: Set up Python
+    steps:
+      - name: Чтение репозитория
+        uses: actions/checkout@v3
+
+      - name: Настройка Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Generate playlist
+      - name: Генерация плейлиста
         run: python generator.py
 
-      - name: Commit and push
+      - name: Коммит и пуш изменений
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Auto-update playlist"
